@@ -77,7 +77,7 @@ class FactorBacktester():
         summary_stats['Recovery'] = recovery_date
         
         # Format the summary statistics
-        summary_stats = summary_stats.map(lambda x: f"{x:.4f}" if isinstance(x, float) else x)
+        summary_stats = summary_stats.map(lambda x: f"{x:.3f}" if isinstance(x, float) else (f"{x.strftime("%Y%m%d")}" if isinstance(x,pd.Timestamp) else x))
         return summary_stats
     
     def _calculate_factor_weights(self, method='long_short'):
@@ -125,6 +125,7 @@ class FactorBacktester():
         def rank_and_qcut_with_nan_numba(ranked_f, returns, quantiles):
             n_rows, n_cols = ranked_f.shape
             quantile_returns = np.zeros((n_rows, quantiles), dtype=np.float64)
+            counts = np.zeros((n_rows, quantiles), dtype=np.int64) 
 
             for i in range(n_rows):
                 row = ranked_f[i, :]
@@ -137,15 +138,14 @@ class FactorBacktester():
                     cuts = np.percentile(valid_ranks, np.linspace(0, 100, quantiles + 1)[1:-1])
                     quantile_indices = np.searchsorted(cuts, valid_ranks)
 
-                    counts = np.zeros(quantiles, dtype=np.int64)
                     for j in range(valid_ranks.size):
                         q = quantile_indices[j]
                         quantile_returns[i, q] += valid_returns[j]
-                        counts[q] += 1
+                        counts[i, q] += 1
 
                     for q in range(quantiles):
-                        if counts[q] > 0:
-                            quantile_returns[i, q] /= counts[q]
+                        if counts[i, q] > 0:
+                            quantile_returns[i, q] /= counts[i, q]
             return quantile_returns
         
         quantile_returns = rank_and_qcut_with_nan_numba(self._factor.rank(axis = 1, method = 'first').values, self._returns.fillna(0).values, quantiles) # factor_rank(method=first) return_fillna0

@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: factor_backtester
+Version: 1.0.0
+Summary: A tool for factor backtesting
+Home-page: https://github.com/AlfredCYL/factor_backtester
+Author: AlfredCYL
+Author-email: alfred.yl@outlook.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: statsmodels
+Requires-Dist: tabulate
+Requires-Dist: numba
+
+# FactorBacktester
+FactorBacktester is a specialized backtester for cross-section factor evaluation. It provides functionality for calculating rankICs, quantile returns, and factor returns based on variable methods. 
+
+## Example
+For a detailed example, please refer to the [test file](/test.ipynb) included in this repository.
+
+## License
+Factor Management is released under the [MIT License](LICENSE).
+
+Please note that this project is still under development, and any feedback or contributions are highly appreciated.

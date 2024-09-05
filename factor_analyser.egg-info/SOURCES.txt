@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+factor_analyser/FactorBacktester.py
+factor_analyser/FactorFactory.py
+factor_analyser/__init__.py
+factor_analyser.egg-info/PKG-INFO
+factor_analyser.egg-info/SOURCES.txt
+factor_analyser.egg-info/dependency_links.txt
+factor_analyser.egg-info/requires.txt
+factor_analyser.egg-info/top_level.txt

@@ -1,3 +1,27 @@
+Metadata-Version: 2.1
+Name: factor_analyser
+Version: 1.0
+Summary: A tool for factor development and analysis.
+Home-page: https://github.com/AlfredCYL/factor_analyser
+Author: AlfredCYL
+Author-email: alfred.yl@outlook.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: statsmodels
+Requires-Dist: tabulate
+Requires-Dist: numba
+Requires-Dist: scipy
+Requires-Dist: seaborn
+Requires-Dist: scikit-learn
+Requires-Dist: plotly
+
 # FactorAnalyser
 
 FactorAnalyser is a powerful toolkit designed to analyze cross-sectional factors and optimize alpha strategies. It comprises two core components: **FactorBacktester** and **FactorFactory**, each providing essential functionalities for comprehensive factor analysis.

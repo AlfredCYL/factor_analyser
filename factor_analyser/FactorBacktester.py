@@ -1,9 +1,9 @@
 import numpy as np
 import numba as nb
 import pandas as pd
+import statsmodels.api as sm
 from tabulate import tabulate
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
 import matplotlib.dates as mdates
 from matplotlib import cm
 from typing import Literal
@@ -201,7 +201,7 @@ class FactorBacktester():
         
         axs[2].xaxis.set_major_locator(mdates.AutoDateLocator())
         axs[2].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-
+    
     def _plot_quantile_returns(self):
         pnl = self._quantile_returns.copy()
 
@@ -209,15 +209,26 @@ class FactorBacktester():
         my_colors = cm.seismic(np.arange(quantiles) / quantiles)
 
         fig, axs = plt.subplots(ncols=2, figsize=(15,4))
-        pnl.cumsum().plot(ax=axs[0], color=my_colors, alpha=0.5)
+        # Plot annualized returns
+        pnl.mean().to_frame('Mean').apply(lambda x: x * self._annualization).plot.bar(ax=axs[0], color='blue')
         axs[0].set_title('Quantile Returns of IC')
-        axs[0].set_xlabel('Date')
-        axs[0].set_ylabel('Cumulative Returns')
+        axs[0].set_xlabel('Quantiles')
+        axs[0].set_ylabel('Annualized Returns')
 
-        pnl.mean().to_frame('Mean').apply(lambda x: x * self._annualization).plot.bar(ax=axs[1], color='blue')
+        # Plot cumulative returns
+        lines = []
+        for i in range(quantiles):
+            line, = axs[1].plot(pnl.cumsum().iloc[:, i], color=my_colors[i], alpha=0.5)
+            if i == 0 or i == quantiles - 1:
+                line.set_linewidth(2)  # Make the first and last lines thicker
+                line.set_alpha(0.8)  # Make the first and last lines more opaque
+            lines.append(line)
         axs[1].set_title('Quantile Returns of IC')
-        axs[1].set_xlabel('Quantiles')
-        axs[1].set_ylabel('Annualized Returns')
+        axs[1].set_xlabel('Date')
+        axs[1].set_ylabel('Cumulative Returns')
+        
+        legend_labels = [f'{i+1}' for i in range(quantiles)]
+        legend = axs[1].legend(lines, legend_labels, bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0., frameon=False)
     
     def get_factor_rets(
         self,
@@ -233,7 +244,7 @@ class FactorBacktester():
             self._plot_factor_rets()
         
         if evaluation:
-            perforamnce_table = tabulate(self._performance_summary(self._profit), headers='keys', tablefmt='pretty', floatfmt=".4f")
+            perforamnce_table = tabulate(self._performance_summary(self._profit), headers='keys', tablefmt='pretty', floatfmt=".3f")
             print(perforamnce_table)
 
         return self._profit
@@ -263,7 +274,7 @@ class FactorBacktester():
             self._plot_quantile_returns()
 
         if evaluation:
-            perforamnce_table = tabulate(self._performance_summary(self._quantile_returns), headers='keys', tablefmt='pretty', floatfmt=".4f")
+            perforamnce_table = tabulate(self._performance_summary(self._quantile_returns), headers='keys', tablefmt='pretty', floatfmt=".3f")
             print(perforamnce_table)
 
         return self._quantile_returns

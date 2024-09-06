@@ -58,23 +58,23 @@ class FactorFactory:
     def evaluate_factor_extension_stats(self, factor, window = 20, min_periods = 2):
         """quickly evaluates various extensions of a factor."""
         print(f"{window}Mean:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).mean(),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).mean(),return_only=False)
         print(f"{window}RankMean:")
-        self.evaluate_factor_icir(factor.rank(1).rolling(window,min_periods=min_periods).mean(),return_only=True)
+        self.evaluate_factor_icir(factor.rank(1).rolling(window,min_periods=min_periods).mean(),return_only=False)
         print(f"{window}ExpMean:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods,win_type = 'exponential').mean(center=window, tau = 1/np.log(1 - (2 / (window))), sym=False),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods,win_type = 'exponential').mean(center=window, tau = 1/np.log(1 - (2 / (window))), sym=False),return_only=False)
         print(f"{window}Std:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).std(),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).std(),return_only=False)
         print(f"{window}Skew:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).skew(),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).skew(),return_only=False)
         print(f"{window}Kurt:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).kurt(),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).kurt(),return_only=False)
         print(f"{window}Median:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).median(),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).median(),return_only=False)
         print(f"{window}Q25:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.25),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.25),return_only=False)
         print(f"{window}Q75:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.75),return_only=True)
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.75),return_only=False)
 
     def save_factor(self, factor, factor_name="factor", time_point = "1100", root_path = "./data/factors/"):
         """Saves the factor data to a specified directory."""

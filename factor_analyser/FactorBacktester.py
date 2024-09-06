@@ -77,7 +77,7 @@ class FactorBacktester():
         summary_stats['Recovery'] = recovery_date
         
         # Format the summary statistics
-        summary_stats = summary_stats.map(lambda x: f"{x:.3f}" if isinstance(x, float) else (f"{x.strftime("%Y%m%d")}" if isinstance(x,pd.Timestamp) else x))
+        summary_stats = summary_stats.map(lambda x: f"{x:.3f}" if isinstance(x, float) else (f"{x.strftime('%Y%m%d')}" if isinstance(x,pd.Timestamp) else x))
         return summary_stats
     
     def _calculate_factor_weights(self, method='long_short'):
@@ -157,7 +157,7 @@ class FactorBacktester():
         fig, ax1 = plt.subplots(figsize=(15,5))
         ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
         ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-        ax1.plot(pnl.loc[:, self._method].cumsum(), label='Price', c='blue')
+        ax1.plot(pnl.loc[:, self._method].cumsum(), label='Cum_Ret', c='blue')
         ax1.set_title(f"Factor Returns: {self._method}")
         ax1.legend()
         plt.show()
@@ -206,7 +206,7 @@ class FactorBacktester():
         pnl = self._quantile_returns.copy()
 
         quantiles = pnl.shape[1]
-        my_colors = cm.seismic(np.arange(quantiles) / quantiles)
+        my_colors = cm.RdYlBu(np.arange(quantiles) / quantiles)
 
         fig, axs = plt.subplots(ncols=2, figsize=(15,4))
         # Plot annualized returns
@@ -218,10 +218,10 @@ class FactorBacktester():
         # Plot cumulative returns
         lines = []
         for i in range(quantiles):
-            line, = axs[1].plot(pnl.cumsum().iloc[:, i], color=my_colors[i], alpha=0.5)
+            line, = axs[1].plot(pnl.cumsum().iloc[:, i], color=my_colors[i], alpha=0.8)
             if i == 0 or i == quantiles - 1:
                 line.set_linewidth(2)  # Make the first and last lines thicker
-                line.set_alpha(0.8)  # Make the first and last lines more opaque
+                line.set_alpha(1)  # Make the first and last lines more opaque
             lines.append(line)
         axs[1].set_title('Quantile Returns of IC')
         axs[1].set_xlabel('Date')

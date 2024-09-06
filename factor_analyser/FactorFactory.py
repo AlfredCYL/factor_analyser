@@ -58,23 +58,23 @@ class FactorFactory:
     def evaluate_factor_extension_stats(self, factor, window = 20, min_periods = 2):
         """quickly evaluates various extensions of a factor."""
         print(f"{window}Mean:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).mean())
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).mean(),return_only=True)
         print(f"{window}RankMean:")
-        self.evaluate_factor_icir(factor.rank(1).rolling(window,min_periods=min_periods).mean())
+        self.evaluate_factor_icir(factor.rank(1).rolling(window,min_periods=min_periods).mean(),return_only=True)
         print(f"{window}ExpMean:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods,win_type = 'exponential').mean(center=window, tau = 1/np.log(1 - (2 / (window))), sym=False))
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods,win_type = 'exponential').mean(center=window, tau = 1/np.log(1 - (2 / (window))), sym=False),return_only=True)
         print(f"{window}Std:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).std())
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).std(),return_only=True)
         print(f"{window}Skew:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).skew())
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).skew(),return_only=True)
         print(f"{window}Kurt:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).kurt())
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).kurt(),return_only=True)
         print(f"{window}Median:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).median())
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).median(),return_only=True)
         print(f"{window}Q25:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.25))
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.25),return_only=True)
         print(f"{window}Q75:")
-        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.75))
+        self.evaluate_factor_icir(factor.rolling(window,min_periods=min_periods).quantile(0.75),return_only=True)
 
     def save_factor(self, factor, factor_name="factor", time_point = "1100", root_path = "./data/factors/"):
         """Saves the factor data to a specified directory."""
@@ -86,6 +86,14 @@ class FactorFactory:
         factor_df = factor.stack().to_frame(factor_name).reset_index()  # Unstack and reset index
         factor_df.to_parquet(factor_save_path)
 
+    def read_factor(self, factor_name="factor", time_point = "1100", root_path = "./data/factors/"):
+        """Reads the factor data from a specified directory. Factor data should be saved in parquet format."""
+        factor_save_path = os.path.join(root_path, factor_name,time_point, "data.parq")
+        factor_df = pd.read_parquet(factor_save_path)
+        factor = factor_df.pivot(index="date", columns="symbol", values=factor_name)
+        factor.index = pd.to_datetime(factor.index)
+        return factor
+    
     def plot_heatmap(self, df, plot_type = 'heatmap' ,title='Heatmap', cmap='coolwarm', annot=True, fmt=".2f", figsize=(10, 8), vmin=-1, vmax=1):
         """Plots a heatmap for the given DataFrame."""
         if plot_type == 'heatmap':
